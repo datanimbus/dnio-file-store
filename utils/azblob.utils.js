@@ -15,8 +15,12 @@ AzureBlobStorageService.prototype.getBuffer = async function (options) {
 AzureBlobStorageService.prototype.setBuffer = async function (options) {
 	const containerClient = this.client.getContainerClient(this.bucket);
 	const blockBlobClient = containerClient.getBlockBlobClient(options.key);
-	const uploadBlobResponse = await blockBlobClient.upload(options.data, options.data.length);
-	return uploadBlobResponse;
+	await blockBlobClient.upload(options.data, options.data.length);
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'azureblob'
+	};
 }
 
 module.exports.AzureBlobStorageService = AzureBlobStorageService;

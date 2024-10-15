@@ -1,7 +1,7 @@
 const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 function AWSS3StorageService(options) {
-    this.client = new S3Client(options);
+	this.client = new S3Client(options);
 	this.bucket = options.bucket;
 }
 
@@ -24,13 +24,18 @@ AWSS3StorageService.prototype.getBuffer = async function (options) {
 }
 
 AWSS3StorageService.prototype.setBuffer = async function (options) {
-    const input = {
-        Bucket: this.bucket,
-        Key: options.key,
-        Body: options.data
-    };
-    const command = new PutObjectCommand(input);
-    await this.client.send(command);
+	const input = {
+		Bucket: this.bucket,
+		Key: options.key,
+		Body: options.data
+	};
+	const command = new PutObjectCommand(input);
+	await this.client.send(command);
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'awss3'
+	};
 }
 
 module.exports.AWSS3StorageService = AWSS3StorageService;

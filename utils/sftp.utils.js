@@ -25,8 +25,13 @@ SFTPStorageService.prototype.setBuffer = async function (options) {
     const filePath = path.join(this.bucket, options.key);
     const uploadPath = path.join(process.cwd(), 'uploads', uuid.v4());
     await fsp.writeFile(uploadPath, options.data);
-    await this.client.put(uploadPath, filePath);
+    await this.client.fastPut(uploadPath, filePath);
     await this.client.end();
     await fsp.unlink(uploadPath);
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'sftp'
+	};
 }
 module.exports.SFTPStorageService = SFTPStorageService;

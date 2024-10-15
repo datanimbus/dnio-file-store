@@ -25,6 +25,11 @@ GridFSStorageService.prototype.setBuffer = async function (options) {
 	});
 	uploadStream.write(options.data);
 	uploadStream.end();
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'gridfs'
+	};
 }
 
 module.exports.GridFSStorageService = GridFSStorageService;

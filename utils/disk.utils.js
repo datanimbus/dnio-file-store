@@ -15,5 +15,10 @@ DiskStorageService.prototype.getBuffer = async function (options) {
 DiskStorageService.prototype.setBuffer = async function (options) {
     const filePath = path.join(this.bucket, options.key);
     await fsp.writeFile(filePath, options.data);
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'disk'
+	};
 }
 module.exports.DiskStorageService = DiskStorageService;
