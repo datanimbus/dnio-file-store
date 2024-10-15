@@ -3,7 +3,7 @@ const path = require('path');
 
 function DiskStorageService(options) {
     this.options = options;
-	this.bucket = options.bucket;
+    this.bucket = options.bucket;
 }
 
 DiskStorageService.prototype.getBuffer = async function (options) {
@@ -14,11 +14,13 @@ DiskStorageService.prototype.getBuffer = async function (options) {
 
 DiskStorageService.prototype.setBuffer = async function (options) {
     const filePath = path.join(this.bucket, options.key);
+    const dirPath = path.dirname(filePath);
+    await fsp.mkdir(dirPath, { recursive: true });
     await fsp.writeFile(filePath, options.data);
-	return {
-		key: options.key,
-		bucket: this.bucket,
-		storageService: 'disk'
-	};
+    return {
+        key: options.key,
+        bucket: this.bucket,
+        storageService: 'disk'
+    };
 }
 module.exports.DiskStorageService = DiskStorageService;
