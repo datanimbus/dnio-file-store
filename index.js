@@ -32,6 +32,37 @@ class StorageService {
     async setBuffer(options) {
         return this.storageService.setBuffer(options);
     }
+
+    static getOptionsFromEnv(storageType) {
+        const options = {};
+        if (storageType === 'gridfs') {
+            options.connectionString = process.env.GRIDFS_CONNECTION_STRING;
+            options.bucket = process.env.GRIDFS_BUCKET;
+        } else if (storageType === 'awss3') {
+            options.region = process.env.AWS_S3_REGION;
+            options.accessKeyId = process.env.AWS_S3_ACCESS_KEY_ID;
+            options.secretAccessKey = process.env.AWS_S3_SECRET_ACCESS_KEY;
+            options.bucket = process.env.AWS_S3_BUCKET;
+        } else if (storageType === 'disk') {
+            options.bucket = process.env.DISK_PATH;
+        } else if (storageType === 'gblob') {
+            options.bucket = process.env.GBLOB_BUCKET;
+            options.projectId = process.env.GBLOB_PROJECT_ID;
+            options.credentials = {
+                client_email: process.env.GBLOB_CLIENT_EMAIL,
+                private_key: process.env.GBLOB_PRIVATE_KEY,
+            };
+        } else if (storageType === 'sftp') {
+            options.host = process.env.SFTP_HOST;
+            options.port = process.env.SFTP_PORT;
+            options.username = process.env.SFTP_USERNAME;
+            options.password = process.env.SFTP_PASSWORD;
+        } else if (storageType === 'azureblob') {
+            options.connectionString = process.env.AZURE_CONNECTION_STRING;
+            options.bucket = process.env.AZURE_CONTAINER;
+        }
+        return options;
+    }
 }
 
 module.exports = StorageService;
