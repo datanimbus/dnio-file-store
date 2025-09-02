@@ -40,11 +40,13 @@ class StorageService {
             options.bucket = process.env.GRIDFS_BUCKET;
         } else if (storageType === 'awss3') {
             options.region = process.env.AWS_S3_REGION;
-            options.credentials = {
-                accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
-                secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
-            };
             options.bucket = process.env.AWS_S3_BUCKET;
+            if (process.env.AWS_S3_ACCESS_KEY_ID && process.env.AWS_S3_SECRET_ACCESS_KEY) {
+                options.credentials = {
+                    accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+                    secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+                };
+            }
         } else if (storageType === 'disk') {
             options.bucket = process.env.DISK_PATH;
         } else if (storageType === 'gblob') {
