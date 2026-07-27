@@ -1,4 +1,5 @@
 const { MongoClient, GridFSBucket } = require('mongodb');
+const { pipeline } = require('stream/promises');
 
 function GridFSStorageService(options) {
 	this.options = options;
@@ -27,6 +28,22 @@ GridFSStorageService.prototype.setBuffer = async function (options) {
 	});
 	uploadStream.write(options.data);
 	uploadStream.end();
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'gridfs'
+	};
+}
+
+GridFSStorageService.prototype.getStream = async function (options) {
+	return this.bucket.openDownloadStream(options.key);
+}
+
+GridFSStorageService.prototype.setStream = async function (options) {
+	const uploadStream = this.bucket.openUploadStream(options.key, {
+		metadata: options.metadata
+	});
+	await pipeline(options.stream, uploadStream);
 	return {
 		key: options.key,
 		bucket: this.bucket,

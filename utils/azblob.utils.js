@@ -23,4 +23,22 @@ AzureBlobStorageService.prototype.setBuffer = async function (options) {
 	};
 }
 
+AzureBlobStorageService.prototype.getStream = async function (options) {
+	const containerClient = this.client.getContainerClient(this.bucket);
+	const blockBlobClient = containerClient.getBlockBlobClient(options.key);
+	const downloadResponse = await blockBlobClient.download();
+	return downloadResponse.readableStreamBody;
+}
+
+AzureBlobStorageService.prototype.setStream = async function (options) {
+	const containerClient = this.client.getContainerClient(this.bucket);
+	const blockBlobClient = containerClient.getBlockBlobClient(options.key);
+	await blockBlobClient.uploadStream(options.stream);
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'azureblob'
+	};
+}
+
 module.exports.AzureBlobStorageService = AzureBlobStorageService;
