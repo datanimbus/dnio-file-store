@@ -41,4 +41,11 @@ AzureBlobStorageService.prototype.setStream = async function (options) {
 	};
 }
 
+AzureBlobStorageService.prototype.getSize = async function (options) {
+	const containerClient = this.client.getContainerClient(this.bucket);
+	const blockBlobClient = containerClient.getBlockBlobClient(options.key);
+	const props = await blockBlobClient.getProperties();
+	return props.contentLength;
+}
+
 module.exports.AzureBlobStorageService = AzureBlobStorageService;

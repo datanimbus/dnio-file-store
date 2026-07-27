@@ -1,4 +1,4 @@
-const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
 const { Upload } = require('@aws-sdk/lib-storage');
 
 function AWSS3StorageService(options) {
@@ -64,6 +64,12 @@ AWSS3StorageService.prototype.setStream = async function (options) {
 		bucket: this.bucket,
 		storageService: 'awss3'
 	};
+}
+
+AWSS3StorageService.prototype.getSize = async function (options) {
+	const command = new HeadObjectCommand({ Bucket: this.bucket, Key: options.key });
+	const response = await this.client.send(command);
+	return response.ContentLength;
 }
 
 module.exports.AWSS3StorageService = AWSS3StorageService;

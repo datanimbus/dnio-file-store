@@ -42,4 +42,10 @@ DiskStorageService.prototype.setStream = async function (options) {
         storageService: 'disk'
     };
 }
+
+DiskStorageService.prototype.getSize = async function (options) {
+    const filePath = path.join(this.bucket, options.key);
+    const stats = await fsp.stat(filePath);
+    return stats.size;
+}
 module.exports.DiskStorageService = DiskStorageService;

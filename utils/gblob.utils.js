@@ -47,4 +47,10 @@ GBlobStorageService.prototype.setStream = async function (options) {
 	};
 }
 
+GBlobStorageService.prototype.getSize = async function (options) {
+	const file = this.client.bucket(this.bucket).file(options.key);
+	const [metadata] = await file.getMetadata();
+	return parseInt(metadata.size, 10);
+}
+
 module.exports.GBlobStorageService = GBlobStorageService;

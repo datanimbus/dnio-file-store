@@ -1,4 +1,5 @@
 const os = require('os');
+const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
 const { v4: uuid } = require('uuid');
@@ -67,6 +68,14 @@ SFTPStorageService.prototype.setStream = async function (options) {
         bucket: this.bucket,
         storageService: 'sftp'
     };
+}
+
+SFTPStorageService.prototype.getSize = async function (options) {
+    await this.client.connect(this.options);
+    const filePath = path.join(this.bucket, options.key);
+    const stat = await this.client.stat(filePath);
+    await this.client.end();
+    return stat.size;
 }
 
 module.exports.SFTPStorageService = SFTPStorageService;

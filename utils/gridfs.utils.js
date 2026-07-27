@@ -51,4 +51,12 @@ GridFSStorageService.prototype.setStream = async function (options) {
 	};
 }
 
+GridFSStorageService.prototype.getSize = async function (options) {
+	const doc = await this.bucket.find({ _id: options.key }).next();
+	if (!doc) {
+		throw new Error(`File not found: ${options.key}`);
+	}
+	return doc.length;
+}
+
 module.exports.GridFSStorageService = GridFSStorageService;
