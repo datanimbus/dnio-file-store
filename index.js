@@ -33,6 +33,18 @@ class StorageService {
         return this.storageService.setBuffer(options);
     }
 
+    async getStream(options) {
+        return this.storageService.getStream(options);
+    }
+
+    async setStream(options) {
+        return this.storageService.setStream(options);
+    }
+
+    async getSize(options) {
+        return this.storageService.getSize(options);
+    }
+
     static getOptionsFromEnv(storageType) {
         const options = {};
         if (storageType === 'gridfs') {

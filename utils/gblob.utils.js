@@ -1,4 +1,5 @@
 const { Storage } = require('@google-cloud/storage');
+const { pipeline } = require('stream/promises');
 
 function GBlobStorageService(options) {
 	this.client = new Storage(options);
@@ -27,6 +28,29 @@ GBlobStorageService.prototype.setBuffer = async function (options) {
 		bucket: this.bucket,
 		storageService: 'gblob'
 	};
+}
+
+GBlobStorageService.prototype.getStream = async function (options) {
+	return this.client
+		.bucket(this.bucket)
+		.file(options.key)
+		.createReadStream();
+}
+
+GBlobStorageService.prototype.setStream = async function (options) {
+	const file = this.client.bucket(this.bucket).file(options.key);
+	await pipeline(options.stream, file.createWriteStream());
+	return {
+		key: options.key,
+		bucket: this.bucket,
+		storageService: 'gblob'
+	};
+}
+
+GBlobStorageService.prototype.getSize = async function (options) {
+	const file = this.client.bucket(this.bucket).file(options.key);
+	const [metadata] = await file.getMetadata();
+	return parseInt(metadata.size, 10);
 }
 
 module.exports.GBlobStorageService = GBlobStorageService;
