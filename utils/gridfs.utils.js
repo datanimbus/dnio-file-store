@@ -36,7 +36,7 @@ GridFSStorageService.prototype.setBuffer = async function (options) {
 	uploadStream.end();
 	return {
 		key: options.key,
-		bucket: this.bucket,
+		bucket: this.options.bucket,
 		storageService: 'gridfs'
 	};
 }
@@ -52,7 +52,7 @@ GridFSStorageService.prototype.setStream = async function (options) {
 	await pipeline(options.stream, uploadStream);
 	return {
 		key: options.key,
-		bucket: this.bucket,
+		bucket: this.options.bucket,
 		storageService: 'gridfs'
 	};
 }
