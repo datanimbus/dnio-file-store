@@ -13,7 +13,7 @@ function GridFSStorageService(options) {
 
 GridFSStorageService.prototype.getBuffer = async function (options) {
 	const bufferData = await new Promise((resolve, reject) => {
-		const downloadStream = this.bucket.openDownloadStream(options.key);
+		const downloadStream = this.bucket.openDownloadStreamByName(options.key);
 		let bufferList = [];
 		downloadStream.on('data', (chunk) => bufferList.push(chunk));
 		downloadStream.on('error', reject);
@@ -36,7 +36,7 @@ GridFSStorageService.prototype.setBuffer = async function (options) {
 }
 
 GridFSStorageService.prototype.getStream = async function (options) {
-	return this.bucket.openDownloadStream(options.key);
+	return this.bucket.openDownloadStreamByName(options.key);
 }
 
 GridFSStorageService.prototype.setStream = async function (options) {
@@ -52,7 +52,7 @@ GridFSStorageService.prototype.setStream = async function (options) {
 }
 
 GridFSStorageService.prototype.getSize = async function (options) {
-	const doc = await this.bucket.find({ _id: options.key }).next();
+	const doc = await this.bucket.find({ filename: options.key }).next();
 	if (!doc) {
 		throw new Error(`File not found: ${options.key}`);
 	}
