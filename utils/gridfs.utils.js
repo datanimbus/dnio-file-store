@@ -58,7 +58,6 @@ GridFSStorageService.prototype.setStream = async function (options) {
 }
 
 GridFSStorageService.prototype.getSize = async function (options) {
-	console.log(`[dnio-file-store] getSize querying db="${this.options.dbName}" collection="${this.options.bucket}.files" filename="${options.key}"`);
 	// GridFS allows multiple files to share a filename (revisions) - match
 	// openDownloadStreamByName's default of resolving to the latest one.
 	const doc = await this.bucket.find({ filename: options.key }, { readPreference: 'primary' }).sort({ uploadDate: -1 }).next();
