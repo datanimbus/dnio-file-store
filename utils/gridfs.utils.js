@@ -52,7 +52,9 @@ GridFSStorageService.prototype.setStream = async function (options) {
 }
 
 GridFSStorageService.prototype.getSize = async function (options) {
-	const doc = await this.bucket.find({ filename: options.key }).next();
+	// GridFS allows multiple files to share a filename (revisions) - match
+	// openDownloadStreamByName's default of resolving to the latest one.
+	const doc = await this.bucket.find({ filename: options.key }).sort({ uploadDate: -1 }).next();
 	if (!doc) {
 		throw new Error(`File not found: ${options.key}`);
 	}
