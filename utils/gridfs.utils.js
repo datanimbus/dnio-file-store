@@ -14,6 +14,7 @@ function GridFSStorageService(options) {
 		// miss a file that was, in fact, successfully written.
 		readPreference: 'primary'
 	});
+	console.log(`[dnio-file-store] GridFS targeting db="${options.dbName}" bucket="${options.bucket}" (collections: ${options.bucket}.files, ${options.bucket}.chunks)`);
 }
 
 GridFSStorageService.prototype.getBuffer = async function (options) {
