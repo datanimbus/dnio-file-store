@@ -5,9 +5,14 @@ function GridFSStorageService(options) {
 	this.options = options;
 	this.client = new MongoClient(options.connectionString);
 	this.client.connect();
-    this.db = this.client.db(options.dbName); 
+    this.db = this.client.db(options.dbName);
 	this.bucket = new GridFSBucket(this.db, {
-		bucketName: options.bucket
+		bucketName: options.bucket,
+		// Reads must see the file this same process just wrote. On a replica
+		// set, a secondary can lag behind the primary just long enough for
+		// an upload's own verification/download-immediately-after-upload to
+		// miss a file that was, in fact, successfully written.
+		readPreference: 'primary'
 	});
 }
 
@@ -54,7 +59,7 @@ GridFSStorageService.prototype.setStream = async function (options) {
 GridFSStorageService.prototype.getSize = async function (options) {
 	// GridFS allows multiple files to share a filename (revisions) - match
 	// openDownloadStreamByName's default of resolving to the latest one.
-	const doc = await this.bucket.find({ filename: options.key }).sort({ uploadDate: -1 }).next();
+	const doc = await this.bucket.find({ filename: options.key }, { readPreference: 'primary' }).sort({ uploadDate: -1 }).next();
 	if (!doc) {
 		throw new Error(`File not found: ${options.key}`);
 	}
